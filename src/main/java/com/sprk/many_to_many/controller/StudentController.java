@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sprk.many_to_many.dto.CourseDto;
 import com.sprk.many_to_many.dto.StudentDto;
+import com.sprk.many_to_many.entity.Course;
 import com.sprk.many_to_many.entity.Student;
+import com.sprk.many_to_many.mapper.CourseMapper;
 import com.sprk.many_to_many.mapper.StudentMapper;
 import com.sprk.many_to_many.repository.StudentRepository;
 
@@ -17,6 +20,8 @@ public class StudentController {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    /* Mappings for student */
 
     @PostMapping("/save")
     public StudentDto saveStudent(@RequestBody StudentDto studentDto){
@@ -37,5 +42,25 @@ public class StudentController {
 
         return studentDto;
         
+    }
+
+    /* Mappings for course */
+
+    @PostMapping("/saveCourse")
+    public CourseDto saveCourse(@RequestBody CourseDto courseDto){
+        Course course = CourseMapper.mappedCourseDto(courseDto, new Course());
+
+        studentRepository.save(course);
+
+        return courseDto;
+    }
+
+    @GetMapping("/getCourseById/{courseId}")
+    public CourseDto getCourseById(@PathVariable int courseId){
+        Course course = studentRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
+
+        CourseDto courseDto = CourseMapper.mappedCourse(course, new CourseDto());
+
+        return courseDto;
     }
 }
