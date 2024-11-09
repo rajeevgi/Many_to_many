@@ -49,6 +49,7 @@ public class StudentMapper {
             courseDtos.add(courseDto);
         }
 
+        studentWithCourseDto.setCourses(courseDtos);
         return studentWithCourseDto;
     }
 }
