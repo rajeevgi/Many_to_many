@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sprk.many_to_many.dto.CourseDto;
-import com.sprk.many_to_many.dto.StudentDto;
 import com.sprk.many_to_many.entity.Course;
-import com.sprk.many_to_many.entity.Student;
 import com.sprk.many_to_many.mapper.CourseMapper;
-import com.sprk.many_to_many.mapper.StudentMapper;
 import com.sprk.many_to_many.repository.CourseRepository;
 
 @RestController
