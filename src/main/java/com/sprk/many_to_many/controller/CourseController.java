@@ -1,57 +1,48 @@
 package com.sprk.many_to_many.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sprk.many_to_many.dto.CourseDto;
-import com.sprk.many_to_many.entity.Course;
-import com.sprk.many_to_many.mapper.CourseMapper;
-import com.sprk.many_to_many.repository.CourseRepository;
+import com.sprk.many_to_many.service.CourseService;
 
 @RestController
 public class CourseController {
 
     @Autowired
-    private CourseRepository courseRepository;
-
-     /* Mappings for course */
+    private CourseService courseService;
 
     @PostMapping("/saveCourse")
     public CourseDto saveCourse(@RequestBody CourseDto courseDto){
-        Course course = CourseMapper.mappedCourseDto(courseDto, new Course());
-
-        courseRepository.save(course);
-        courseDto.setCourseId(course.getCourseId());
-
-        return courseDto;
+        return courseService.saveCourse(courseDto);
     }
 
     @GetMapping("/getCourseById/{courseId}")
     public CourseDto getCourseById(@PathVariable int courseId){
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found"));
-
-        CourseDto courseDto = CourseMapper.mappedCourse(course, new CourseDto());
-
-        return courseDto;
+        return courseService.getCourseById(courseId);
     }
 
     @GetMapping("/getAllCourses")
     public List<CourseDto> getAllCourses(){
-
-        List<Course> courses = courseRepository.findAll();
-        List<CourseDto> courseDtos = new ArrayList<>();
-
-        for(Course course : courses){
-            CourseDto courseDto = CourseMapper.mappedCourse(course, new CourseDto());
-            courseDtos.add(courseDto);
-        }
-        return courseDtos;
+        return courseService.getAllCourses();
     }
+
+    @DeleteMapping("/deleteCourse/{courseId}")
+    public String deleteCourse(@PathVariable int courseId){
+        return courseService.deleteCourseById(courseId);
+    }
+
+    @PutMapping("/updateCourse/{courseId}")
+    public String updateStudent(@PathVariable int courseId){
+        return courseService.updateCourseById(courseId);
+    }
+
 }

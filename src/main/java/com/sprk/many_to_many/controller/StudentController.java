@@ -1,61 +1,47 @@
 package com.sprk.many_to_many.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sprk.many_to_many.dto.StudentDto;
-import com.sprk.many_to_many.entity.Student;
-import com.sprk.many_to_many.mapper.StudentMapper;
-import com.sprk.many_to_many.repository.StudentRepository;
+import com.sprk.many_to_many.service.StudentService;
 
 @RestController
 public class StudentController {
 
     @Autowired
-    private StudentRepository studentRepository;
+    private StudentService studentService;
 
-    /* Mappings for student */
-
-    @PostMapping("/save")
+    @PostMapping("/saveStudent")
     public StudentDto saveStudent(@RequestBody StudentDto studentDto){
-
-        Student student = StudentMapper.mappedStudentDto(studentDto, new Student());
-
-        studentRepository.save(student);
-
-        studentDto.setRollNo(student.getRollNo());
-
-        return studentDto;
+        return studentService.saveStudent(studentDto);
     }
 
     @GetMapping("/getStudent/{rollNo}")
     public StudentDto getStudentByRollNo(@PathVariable int rollNo){
-
-        Student student = studentRepository.findById(rollNo).orElseThrow(() -> new RuntimeException("Student not found.."));
-
-        StudentDto studentDto = StudentMapper.mappedStudent(student, new StudentDto());
-
-        return studentDto;
-        
+        return studentService.getStudentByRollNo(rollNo);
     }
 
     @GetMapping("/getAllStudents")
     public List<StudentDto> getAllStudents(){
-        List<Student> students = studentRepository.findAll();
-        List<StudentDto> studentDtos = new ArrayList<>();
-
-        for(Student student : students){
-            StudentDto studentDto = StudentMapper.mappedStudent(student, new StudentDto());
-            studentDtos.add(studentDto);
-        }
-        return studentDtos;
+        return studentService.getAllStudents();
     }
 
+    @DeleteMapping("/deleteStudent/{rollNo}")
+    public String deleteStudentByRollNo(@PathVariable int rollNo){
+        return studentService.deleteStudentByRollNo(rollNo);
+    }
+    
+    @PutMapping("/updateStudent/{rollNo}")
+    public String updateStudentByRollNo(@PathVariable int rollNo){
+        return studentService.updateStudentByRollNo(rollNo);
+    }
 }
