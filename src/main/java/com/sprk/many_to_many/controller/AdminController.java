@@ -13,34 +13,38 @@ import com.sprk.many_to_many.entity.Student;
 import com.sprk.many_to_many.mapper.StudentMapper;
 import com.sprk.many_to_many.repository.CourseRepository;
 import com.sprk.many_to_many.repository.StudentRepository;
+import com.sprk.many_to_many.service.AdminService;
+import com.sprk.many_to_many.service.CourseService;
+import com.sprk.many_to_many.service.StudentService;
 
 @RestController
 public class AdminController {
 
     @Autowired
-    private StudentRepository studentRepository;
+    private StudentService studentService;
 
     @Autowired
-    private CourseRepository courseRepository;
+    private CourseService courseService;
+
+    @Autowired
+    private AdminService adminService;
 
     @PostMapping("/assign-course-to-student")
     public String addCourseToStudent(@RequestParam int rollNo, @RequestParam int courseId){
-        Student student = studentRepository.findById(rollNo).orElseThrow(() -> new RuntimeException("Student not found."));
-
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RuntimeException("Course not found."));
-
-        student.addCourses(course);
-
-        studentRepository.save(student);
-
-        return "Course added successfully.";
+        return adminService.addCourseToStudent(rollNo, courseId);
     }
 
+    @GetMapping("/get-student-with-course/{rollNo}")
+    public StudentWithCourseDto getStudentWithCourses(@PathVariable int rollNo){
+        return adminService.getStudentWithCourses(rollNo);
+    }
+
+    /* 
     @GetMapping("/get-student-with-course/{rollNo}")
     public StudentWithCourseDto getStudentWithCourses(@PathVariable int rollNo){
         Student student = studentRepository.findStudentWithCourses(rollNo).orElseThrow(() -> new RuntimeException("Student not found"));
         StudentWithCourseDto studentWithCourseDto = StudentMapper.mappedStudentToStudentWithCourseDto(student, new StudentWithCourseDto());
 
         return studentWithCourseDto;
-    }
+    }*/
 }
